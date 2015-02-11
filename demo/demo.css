@@ -1,0 +1,62 @@
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,menu{margin:0;padding:0;outline:none;}
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{display:block;}
+table{border-collapse:collapse;border-spacing:0;}
+caption,th{text-align:left;font-weight:normal;}
+html,body,fieldset,img,iframe,abbr{border:0;}
+i,cite,em,var,address,dfn{font-style:normal;}
+[hidefocus],summary{outline:0;}
+li{list-style:none;}
+h1,h2,h3,h4,h5,h6,small{font-size:100%;}
+sup,sub{font-size:83%;}
+pre,code,kbd,samp{font-family:inherit;}
+q:before,q:after{content:none;}
+textarea{overflow:auto;resize:none;}
+label,summary{cursor:default;}
+a,button{cursor:pointer;}
+h1,h2,h3,h4,h5,h6,em,strong,b{font-weight:normal;}
+del,ins,u,s,a,a:hover{text-decoration:none;outline:none;}
+u,ins{text-decoration:underline;}
+body,textarea,input,button,select,keygen,legend{font:12px/1.5 helvetica,"Hiragino Sans GB","Microsoft YaHei","微软雅黑","宋体";color:#333;outline:0;}
+body{background:#f5f5f5;}
+a,a:hover{color:#333;}
+.f-cb{zoom:1;}
+.f-cb:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}
+
+.m-detail{padding: 20px 30px;}
+.m-detail .row{padding: 5px 0;}
+.m-detail .l-col{color: #838383;float: left;width: 50px;margin-top: 10px;}
+.m-detail .r-col{float: left;width: 400px;}
+.m-detail .title{font-size: 14px; font-weight: bold;color:#000;}
+.m-detail .yen{font-size: 18px;vertical-align: middle;}
+.m-detail .price{vertical-align: middle;color: #c40000;font-size: 24px;font-family: Arial;font-weight: bolder;}
+.m-detail .account{vertical-align: middle;margin-top: 10px;}
+.m-sku li{
+  line-height: 28px;
+  float: left;
+  position: relative;
+  margin: 0 4px 4px 0;
+  vertical-align: middle;
+  padding: 1px;
+}
+.m-sku li span{
+  float: left;
+  cursor: pointer;
+  background-color: #fff;
+  white-space: nowrap;
+  width: auto!important;
+  min-width: 10px;
+  padding: 0 9px;
+  text-align: center;
+  border: 1px solid #b8b7bd;
+  color: #000;
+  text-decoration: none;
+}
+
+.m-sku li span.js-seleted{
+  border: 2px solid #be0106;
+  margin: -1px;
+}
+.m-sku li span.js-disabled{
+  border: 1px dashed #D6D6D8;
+  color: #CDCDCD;
+}
