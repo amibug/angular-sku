@@ -1,17 +1,18 @@
 (function() {
   angular.module('ui.angularSku', [])
-    .constant('skuConfig', {
+    .value('skuConfig', {
+      splitStr: ';'
     })
-    .factory('utilService', function(){
+    .factory('utilService', ['$log','skuConfig', function($log, skuConfig){
       var key_account_Map = {},
         keys = [];
 
-      /**
-       * 数组去重
-       * @param a {Array}
-       * @returns {Array}
-       */
       return {
+        /**
+         * 数组去重
+         * @param a {Array}
+         * @returns {Array}
+         */
         unique: function(a){
           var res = [];
           var json = {};
@@ -22,6 +23,18 @@
             }
           }
           return res;
+        },
+
+        /**
+         * 矩阵转置前的2维素组
+         */
+        getSkuList: function(obj){
+          var array = [];
+          if(!obj) $log.error('input sku-data error!');
+          angular.forEach(obj, function(value, key) {
+            array.push(key.split(skuConfig.splitStr));
+          });
+          return array;
         },
 
         /**
@@ -56,12 +69,13 @@
         //};
 
         /**
-         * 获取sku规格
+         * 获取sku规格--2维数组
          * @param a {Array}
          * @returns {Array}
          */
-        getKeys: function(a){
-          var ta = this.transpose(a),
+        getKeys: function(obj){
+          var list = this.getSkuList(obj),
+            ta = this.transpose(list),
             r = [];
           for(var i=0; i<ta.length; i++){
             r[i] = this.unique(ta[i]);
@@ -86,7 +100,7 @@
             return key_account_Map[key];
           }
 
-          items = key.split(";");
+          items = key.split(skuConfig.splitStr);
 
           //已选择数据是最小路径，直接从已端数据获取
           if (items.length === keys.length) {
@@ -107,7 +121,7 @@
             } else {
               //分解求值
               for (m = 0; m < keys[i].length; m++) {
-                result += this.getNum(n.concat(keys[i][m], items).join(";"));
+                result += this.getNum(n.concat(keys[i][m], items).join(skuConfig.splitStr));
               }
               break;
             }
@@ -118,31 +132,56 @@
           return result;
         }
       }
-    })
-    .directive('uiSku', ['skuConfig', 'utilService', function(skuConfig, utilService){
+    }])
+    .directive('uiSku', ['$log', 'skuConfig', 'utilService', function($log, skuConfig, utilService){
       return{
         restrict: 'A',
         transclude: true,
-        scope: {},
-        controller: function($scope, $element, $attrs, utilService) {
+        scope: {
+          splitStr:'@',
+          onOk: '&',
+          skuData: '='
+        },
+        controller: function($scope, $element, $attrs) {
           // 设置选中
           this.checkIn = function(key) {
             $scope.accept();
           };
+
         },
         link: function(scope, element, attrs, ctrls, transclude) {
+          if(!!scope.splitStr) skuConfig.splitStr = scope.splitStr;
+          scope.keyMap = {};
+          scope.selectedKeyArray = [];
+          scope.keys = utilService.getKeys(scope.skuData);
+
+          angular.forEach(scope.keys, function(array, i0){
+            angular.forEach(array, function(value, i1) {
+              scope.keyMap[value] = {
+                name: value,
+                selected: !1,
+                disabled: !1
+              }
+            });
+          });
+
           // 手动设置transclude,解决用ng-transclude scope作用域问题
           // https://gist.github.com/meanJim/1c3339bde5cbeac6417d
           transclude(scope, function(clone){
             element.append(clone);
           });
-          scope.keyMap = {'S':{}, 'M':{}};
-          scope.keyMap['S'].selected = true;
-          scope.keyMap['M'].disabled = true;
+
           scope.onKeyClick = function(key, index){
             var keyMap = scope.keyMap;
-            if(!!keyMap[key] && !keyMap[key].disabled) return;
-            debugger;
+            if(keyMap[key].disabled) return;
+            if(index == null){
+              if(!obj) $log.error('input index error!');
+              return;
+            }
+            scope.selectedKeyArray[index] = key;
+            angular.forEach(scope.selectedKeyArray, function(value, i){
+
+            });
           }
         }
       }
