@@ -114,7 +114,7 @@
          * key对应的库存
          * @param key
          * @param data
-         * @returns {*}
+         * @returns {Number}
          */
         getNum: function(key, data){
           var result = 0,
@@ -157,7 +157,7 @@
           key_account_Map[key] = result;
           return result;
         }
-      }
+      };
     }])
     .directive('uiSku', ['$log', 'skuConfig', 'utilService', function($log, skuConfig, utilService){
       return{
@@ -169,12 +169,12 @@
           onOk: '&',
           skuData: '='
         },
-        controller: function($scope, $element, $attrs) {
+        controller: ['$scope', '$element', '$attrs',function($scope, $element, $attrs) {
           // 设置选中
           this.checkIn = function(keys) {
             $scope.initSelect(keys);
           };
-        },
+        }],
         link: function(scope, element, attrs, ctrls, transclude) {
           if(!!scope.splitStr) skuConfig.splitStr = scope.splitStr;
           scope.keyMap = {};
@@ -187,7 +187,7 @@
                 name: value,
                 selected: !1,
                 disabled: !1
-              }
+              };
             });
           });
 
@@ -200,7 +200,7 @@
           // 初始化选中
           scope.initSelect = function(keys){
             var list = keys.split(skuConfig.splitStr);
-            if(list.length==0)  if(!obj) $log.error('input init-sku is undefiend!');
+            if(list.length==0)  $log.error('input init-sku is undefiend!');
             angular.forEach(list, function(value, index){
               scope.onSelect(value);
             });
@@ -228,12 +228,12 @@
               index = utilService.getIndex(currentKey);
 
             if(index === -1){
-              if(!obj) $log.error('key is undefiend!');
+              $log.error('key is undefiend!');
               return;
             }
             // 维护selected数组
 
-            scope.selected[index] = !!(scope.selected[index]===currentKey)? void 0:currentKey;
+            scope.selected[index] = (scope.selected[index]===currentKey)? void 0:currentKey;
             angular.forEach(scope.keys, function(array, i0){
               angular.copy(scope.selected, copy);
               angular.forEach(array, function(key, i1) {
@@ -254,6 +254,6 @@
 
           if(!!scope.initSku) scope.initSelect(scope.initSku);
         }
-      }
-    }])
+      };
+    }]);
 })();
