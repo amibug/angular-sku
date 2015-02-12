@@ -19,6 +19,9 @@ u,ins{text-decoration:underline;}
 body,textarea,input,button,select,keygen,legend{font:12px/1.5 helvetica,"Hiragino Sans GB","Microsoft YaHei","微软雅黑","宋体";color:#333;outline:0;}
 body{background:#f5f5f5;}
 a,a:hover{color:#333;}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
 .f-cb{zoom:1;}
 .f-cb:after{display:block;clear:both;visibility:hidden;height:0;overflow:hidden;content:".";}
 
