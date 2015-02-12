@@ -8,6 +8,32 @@
         keys = [];
 
       return {
+
+        /**
+         * 过滤数组
+         * @param a
+         * @param predicate
+         * @returns {Array}
+         */
+        filter: function(a, predicate){
+          var results = [];
+          angular.forEach(a, function(value, index) {
+            if (predicate(value, index)) results.push(value);
+          });
+          return results;
+        },
+
+
+        getIndex: function(key){
+          var index = -1;
+          angular.forEach(keys, function(array, i0) {
+            if(index!==-1) return;
+            angular.forEach(array, function(value, i1) {
+              if(key===value) index = i0;
+            });
+          });
+          return index;
+        },
         /**
          * 数组去重
          * @param a {Array}
@@ -96,7 +122,7 @@
             items, n = [];
 
           //检查是否已计算过
-          if (typeof key_account_Map[key] != 'undefined') {
+          if (angular.isDefined(key_account_Map[key])) {
             return key_account_Map[key];
           }
 
@@ -121,7 +147,7 @@
             } else {
               //分解求值
               for (m = 0; m < keys[i].length; m++) {
-                result += this.getNum(n.concat(keys[i][m], items).join(skuConfig.splitStr));
+                result += this.getNum(n.concat(keys[i][m], items).join(skuConfig.splitStr), data);
               }
               break;
             }
@@ -139,20 +165,20 @@
         transclude: true,
         scope: {
           splitStr:'@',
+          initSku:'@',
           onOk: '&',
           skuData: '='
         },
         controller: function($scope, $element, $attrs) {
           // 设置选中
-          this.checkIn = function(key) {
-            $scope.accept();
+          this.checkIn = function(keys) {
+            $scope.initSelect(keys);
           };
-
         },
         link: function(scope, element, attrs, ctrls, transclude) {
           if(!!scope.splitStr) skuConfig.splitStr = scope.splitStr;
           scope.keyMap = {};
-          scope.selectedKeyArray = [];
+          scope.selected = [];
           scope.keys = utilService.getKeys(scope.skuData);
 
           angular.forEach(scope.keys, function(array, i0){
@@ -171,18 +197,62 @@
             element.append(clone);
           });
 
-          scope.onKeyClick = function(key, index){
-            var keyMap = scope.keyMap;
+          // 初始化选中
+          scope.initSelect = function(keys){
+            var list = keys.split(skuConfig.splitStr);
+            if(list.length==0)  if(!obj) $log.error('input init-sku is undefiend!');
+            angular.forEach(list, function(value, index){
+              scope.onSelect(value);
+            });
+          };
+
+          // 页面ng-click事件
+          scope.onSelect = function(key){
+            var keyMap = scope.keyMap, check = [];
             if(keyMap[key].disabled) return;
-            if(index == null){
-              if(!obj) $log.error('input index error!');
+            scope.checkItem(key);
+
+
+            check = utilService.filter(scope.selected, function(value, index){
+              return angular.isDefined(value);
+            });
+
+            // fire callback
+            scope.onOk({$event:utilService.getNum(check.join(skuConfig.splitStr), scope.skuData)});
+          };
+
+          // 检查每一项的状态
+          scope.checkItem = function(currentKey){
+            var keyMap = scope.keyMap,
+              copy = [], check = [],
+              index = utilService.getIndex(currentKey);
+
+            if(index === -1){
+              if(!obj) $log.error('key is undefiend!');
               return;
             }
-            scope.selectedKeyArray[index] = key;
-            angular.forEach(scope.selectedKeyArray, function(value, i){
+            // 维护selected数组
 
+            scope.selected[index] = !!(scope.selected[index]===currentKey)? void 0:currentKey;
+            angular.forEach(scope.keys, function(array, i0){
+              angular.copy(scope.selected, copy);
+              angular.forEach(array, function(key, i1) {
+                if(i0 === index){
+                  // 当前选中的行,当前选中的项状态置反，其他设置为false
+                  keyMap[key].selected = !!(currentKey===key)? !keyMap[key].selected: !1;
+                }
+                // 当前选中的行不做, 已经选中的项不具体逻辑
+                if(i0 === index || !!keyMap[key].selected) return;
+                copy[i0] = key;
+                check = utilService.filter(copy, function(value, index){
+                  return angular.isDefined(value);
+                });
+                keyMap[key].disabled = utilService.getNum(check.join(skuConfig.splitStr), scope.skuData) > 0? false: true;
+              });
             });
-          }
+          };
+
+          if(!!scope.initSku) scope.initSelect(scope.initSku);
         }
       }
     }])
