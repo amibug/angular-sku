@@ -2,7 +2,7 @@
 
 demo：http://codepen.io/hzxs1990225/pen/VYyOdW
 
-专栏：http://www.html-js.com/article/2681
+专栏：http://www.html-js.com/article/2727
 
 In your web page:
 
