@@ -1,6 +1,7 @@
 # angular-sku
 
 demo：http://codepen.io/hzxs1990225/pen/VYyOdW
+
 专栏：http://www.html-js.com/article/2681
 
 In your web page:
@@ -66,5 +67,6 @@ myapp.controller('skuController', function ($scope) {
 - splitStr为不同key之间的分格缝（S#红色#男中指的是‘#’）
 - initSku为默认设置的选中key（可以设置为M#红色#女）
 - onOk点击key之后的callback（callback接受的参数为选择sku组合（例如'S#橙色#男'）对应的值）
+
 @support IE>=8
 
